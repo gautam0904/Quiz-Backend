@@ -4,7 +4,7 @@ export const MSG ={
     serverlisten : 'Server is listening on port',
     usercreated : 'User is created successfully',
     loginSuccess : 'User is logged in successfully',
-    success : (task : string) =>{return `${task} is done successfully`}
+    success : (task : string) =>{return `${task} successfully`}
 }
 
 export const errMSG = {
@@ -24,4 +24,7 @@ export const errMSG = {
     notFoundDeleted : 'There is no deleted user',
     retreiveUser : 'User is not retrieved',
     invalidID : 'Invalid object ID',
+    createQuestion : 'Question is not created',
+    notExistQuestion : 'Question is not exist',
+    notaligableUser : 'User is not aligable for paper',
 }
