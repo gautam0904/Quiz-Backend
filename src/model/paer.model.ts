@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import { errMSG } from "../constant/message";
 
 const paperSchema = new mongoose.Schema({
-    user : {
+    userId : {
         type : mongoose.Types.ObjectId,
         ref : "user"
     },

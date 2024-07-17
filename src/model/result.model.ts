@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import { errMSG } from "../constant/message";
 
 const resultSchema = new mongoose.Schema({
-    user : {
+    userId : {
         type : mongoose.Types.ObjectId,
         ref : "user"
     },
@@ -10,10 +10,10 @@ const resultSchema = new mongoose.Schema({
         type : Number,
         required : [true , errMSG.required('User level')]
     },
-    marks : [{
+    marks : {
         type : Number,
         required : [true , errMSG.required('User marks')]
-    }],
+    },
  
 });
 

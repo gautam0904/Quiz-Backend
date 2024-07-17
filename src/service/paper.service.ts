@@ -41,6 +41,7 @@ export class PaperService {
             optionB: 1,
             optionC: 1,
             optionD: 1,
+            hardness :1,
             _id: 1
           },
         },

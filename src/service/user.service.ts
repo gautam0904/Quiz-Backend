@@ -109,26 +109,25 @@ export class UserService {
 
   async deleteUser(userId: string) {
     const session = await mongoose.startSession();
-  
+
     session.startTransaction();
-  
+
     try {
       const opts = { session };
-  
+
 
       const existUser = await User.findOne({ _id: userId });
       if (!existUser) {
         throw new ApiError(StatusCode.NotFound, `${errMSG.notExistUser}`);
       }
 
-      const deletedUser = await User.findOneAndDelete({ _id: userId });
+      const deletedUser = await User.findOneAndDelete({ _id: userId },opts);
 
-      await Result.deleteMany({ user: existUser._id });
-      await Paper.deleteMany({ user: existUser._id });
-  
+      await Result.deleteMany({ userId: existUser._id } , opts);
+      await Paper.deleteMany({ userId: existUser._id }, opts);
+
       await session.commitTransaction();
-      session.endSession();
-  
+
       return {
         statuscode: StatusCode.OK,
         content: {
@@ -139,16 +138,30 @@ export class UserService {
     } catch (error: any) {
 
       await session.abortTransaction();
-      session.endSession();
-  
-      console.error('Transaction aborted. Error:', error.message);
+
       return {
         statuscode: error.statusCode || StatusCode.NotImplemented,
         content: { message: error.message },
       };
+    } finally {
+      session.endSession();
     }
   }
-  
+
+async getUserById(userId: string){
+  try {
+    const user = await User.findById(userId)
+    if (!user) throw new ApiError(StatusCode.NoContent , errMSG.userNotFound)
+    
+      return  user
+
+      
+  } catch (error : any) {
+    return {
+        message: error.message || errMSG.defaultErrorMsg,
+    }
+  }
+}
 
   async getAlluser() {
     try {
@@ -175,10 +188,10 @@ export class UserService {
       if (users) {
         return {
           statuscode: StatusCode.OK,
-          content: { 
-            message : MSG.success('Users get '),
-            data : users
-           },
+          content: {
+            message: MSG.success('Users get '),
+            data: users
+          },
         };
       } else {
         throw new ApiError(StatusCode.NotFound, `${errMSG.userNotFound}`);
@@ -193,9 +206,9 @@ export class UserService {
 
   async updateUserwithprofilepicture(updateData: Iuser): Promise<{ statuscode: any; Content: any; }> {
     try {
-  
+
       const existUser = await User.findById(updateData._id);
-  
+
       let result;
       await deleteonCloudinary(existUser?.profilePicture as string).then(async (response) => {
         const profile = await uploadOnCloudinary(updateData.profilePicture);
@@ -222,12 +235,12 @@ export class UserService {
       }).catch((err: any) => {
         throw new ApiError(StatusCode.NotImplemented, errMSG.updateUser);
       });
-  
+
       return {
         statuscode: StatusCode.OK,
         Content: result,
       };
-  
+
     } catch (error: any) {
       deleteonCloudinary(this.cloudinaryurl).then((response) => {
         this.cloudinaryurl = "";
@@ -238,7 +251,8 @@ export class UserService {
       };
     }
   }
-  
+
+
   async updateUserWithoutProfilePicture(updateData: Iuser) {
     try {
 
@@ -250,6 +264,7 @@ export class UserService {
           $set: {
             name: updateData.name,
             email: updateData.email,
+            level : updateData.level
           },
         },
         { new: true }
