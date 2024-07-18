@@ -26,7 +26,7 @@ export class PaperController {
             const created_question = await this.paperService.createPaper(userId as string);
 
             res.status(created_question.statuscode).json(created_question.Content);
-        } catch (error: any) {
+        } catch (error :any) {
             res.status(error.statusCode || StatusCode.NotImplemented).json({ message: error.message || errMSG.InternalServerErrorResult })
         }
     }

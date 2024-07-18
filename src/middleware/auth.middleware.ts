@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from "express";
-import { ParamsDictionary } from "express-serve-static-core";
 import { BaseMiddleware } from "inversify-express-utils";
 import jwt from "jsonwebtoken";
 import { errMSG } from "../constant/message"
@@ -36,7 +35,7 @@ export class Auth extends BaseMiddleware {
           res.status(StatusCode.Unauthorized).send(errMSG.expiredToken)
           return
         }
-        req.find = decoded
+        // req.find = decoded
 
         req.headers.USERID = decoded.id;
         req.headers.ROLE = decoded.role;
