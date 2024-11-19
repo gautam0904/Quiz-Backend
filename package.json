@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon ./src/server.ts"
+    "test": "echo \"Error: no test specified\" && exit 1",
+     "build":"npm install --legacy-peer-deps && tsc --outDir dist",
+     "start": "node dist/server.js"
   },
   "keywords": [],
   "author": "",
